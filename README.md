@@ -92,6 +92,8 @@ python3 scripts/seed_demo_data.py
 docker compose up --build
 ```
 
+Docker Compose injects container-safe defaults (`POSTGRES_HOST=postgres`, `REDIS_URL=redis://redis:6379/0`) for API/worker/beat, so `.env` can remain local-first.
+
 For a standalone API container (without Postgres) you can run:
 
 ```bash

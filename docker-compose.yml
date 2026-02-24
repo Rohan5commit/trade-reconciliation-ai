@@ -34,6 +34,9 @@ services:
       - redis
     env_file:
       - .env
+    environment:
+      POSTGRES_HOST: postgres
+      REDIS_URL: redis://redis:6379/0
     volumes:
       - ./data:/app/data
       - ./models:/app/models
@@ -46,6 +49,9 @@ services:
       - postgres
     env_file:
       - .env
+    environment:
+      POSTGRES_HOST: postgres
+      REDIS_URL: redis://redis:6379/0
     volumes:
       - ./data:/app/data
       - ./models:/app/models
@@ -58,6 +64,9 @@ services:
       - celery_worker
     env_file:
       - .env
+    environment:
+      POSTGRES_HOST: postgres
+      REDIS_URL: redis://redis:6379/0
 
 volumes:
   postgres_data:
