@@ -1,4 +1,4 @@
-.PHONY: install run test lint format worker beat
+.PHONY: install run test lint format worker beat smoke
 
 install:
 	python3 -m pip install -r requirements.txt
@@ -11,6 +11,9 @@ worker:
 
 beat:
 	celery -A src.tasks.worker.celery_app beat --loglevel=info
+
+smoke:
+	bash scripts/smoke.sh
 
 test:
 	pytest -q

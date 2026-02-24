@@ -86,6 +86,12 @@ celery -A src.tasks.worker.celery_app beat --loglevel=info
 python3 scripts/seed_demo_data.py
 ```
 
+6. One-shot smoke flow (health + seed + reconcile + reports):
+
+```bash
+make smoke
+```
+
 ## Docker Deployment
 
 ```bash
