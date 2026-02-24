@@ -3,6 +3,7 @@ fastapi==0.115.0
 uvicorn[standard]==0.32.0
 pydantic==2.9.2
 pydantic-settings==2.5.2
+eval_type_backport==0.2.2; python_version < "3.10"
 celery[redis]==5.4.0
 redis==5.1.1
 
@@ -29,7 +30,8 @@ imbalanced-learn==0.12.4
 optuna==4.1.0
 joblib==1.4.2
 pandas==2.2.3
-numpy==2.1.2
+numpy==2.1.2; python_version >= "3.10"
+numpy==2.0.2; python_version < "3.10"
 shap==0.46.0
 
 # Data connectors
