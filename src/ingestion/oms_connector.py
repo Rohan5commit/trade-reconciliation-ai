@@ -19,7 +19,9 @@ class OMSConnector(TradeConnector):
         self.api_key = config.get('OMS_API_KEY', '')
         self.alpaca_key_id = config.get('ALPACA_API_KEY_ID', '')
         self.alpaca_secret_key = config.get('ALPACA_API_SECRET_KEY', '')
+        self.kraken_pair = config.get('KRAKEN_PAIR', 'XBTUSD')
         self.is_alpaca = 'alpaca.markets' in self.api_url
+        self.is_kraken = 'api.kraken.com' in self.api_url
         self.client: httpx.Client | None = None
 
     def connect(self) -> bool:
@@ -48,6 +50,9 @@ class OMSConnector(TradeConnector):
             if self.is_alpaca:
                 response = self.client.get('/v2/account')
                 return response.status_code == 200
+            if self.is_kraken:
+                response = self.client.get('/0/public/SystemStatus')
+                return response.status_code == 200
 
             response = self.client.get('/health')
             return response.status_code < 500
@@ -75,6 +80,18 @@ class OMSConnector(TradeConnector):
                 orders = response.json()
                 logger.info(f'Fetched {len(orders)} Alpaca filled orders')
                 return orders
+            if self.is_kraken:
+                response = self.client.get('/0/public/Trades', params={'pair': self.kraken_pair})
+                response.raise_for_status()
+                payload = response.json()
+                if payload.get('error'):
+                    logger.error(f"Kraken API error: {payload['error']}")
+                    return []
+                result = payload.get('result', {})
+                pair_key = next((k for k in result.keys() if k != 'last'), self.kraken_pair)
+                trades = result.get(pair_key, [])
+                logger.info(f'Fetched {len(trades)} Kraken public trades for {pair_key}')
+                return trades
 
             response = self.client.get(
                 '/api/v1/trades',
@@ -93,7 +110,9 @@ class OMSConnector(TradeConnector):
             logger.error(f'Error fetching OMS trades: {exc}')
             return []
 
-    def normalize_trade(self, raw_trade: dict[str, Any]) -> dict[str, Any]:
+    def normalize_trade(self, raw_trade: dict[str, Any] | list[Any]) -> dict[str, Any]:
+        if self.is_kraken:
+            return self._normalize_kraken_trade(raw_trade)
         if self.is_alpaca:
             return self._normalize_alpaca_trade(raw_trade)
 
@@ -153,6 +172,37 @@ class OMSConnector(TradeConnector):
             'currency': 'USD',
             'counterparty': 'alpaca',
             'account_number': order.get('account_id'),
+            'portfolio': None,
+            'commission': 0.0,
+            'fees': 0.0,
+        }
+
+    def _normalize_kraken_trade(self, trade: list[Any]) -> dict[str, Any]:
+        # Kraken public trade payload: [price, volume, time, side, ordertype, misc, trade_id?]
+        price = float(trade[0]) if len(trade) > 0 else 0.0
+        qty = float(trade[1]) if len(trade) > 1 else 0.0
+        ts = float(trade[2]) if len(trade) > 2 else datetime.utcnow().timestamp()
+        side = str(trade[3]).lower() if len(trade) > 3 else 'b'
+        trade_time = datetime.utcfromtimestamp(ts)
+        gross = price * qty
+        source_trade_id = f'kraken-{int(ts * 1_000_000)}-{side}'
+
+        return {
+            'source_system': TradeSource.OMS,
+            'source_trade_id': source_trade_id,
+            'source_raw_data': {'trade': trade, 'pair': self.kraken_pair},
+            'trade_date': trade_time,
+            'settlement_date': None,
+            'symbol': self.kraken_pair,
+            'security_identifier': None,
+            'side': 'BUY' if side == 'b' else 'SELL',
+            'quantity': qty,
+            'price': price,
+            'gross_amount': gross,
+            'net_amount': gross,
+            'currency': 'USD',
+            'counterparty': 'kraken_public',
+            'account_number': None,
             'portfolio': None,
             'commission': 0.0,
             'fees': 0.0,

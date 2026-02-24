@@ -145,5 +145,6 @@ GitHub Actions workflow: `.github/workflows/ci-docker.yml`
 
 - Credentials and API keys are intentionally not hard-coded.
 - Free OMS option is supported out of the box via Alpaca paper trading (`OMS_API_URL=https://paper-api.alpaca.markets` plus Alpaca key/secret).
+- Alternative free OMS option is Kraken public trades (no key required): set `OMS_API_URL=https://api.kraken.com` and optional `KRAKEN_PAIR` (e.g., `XBTUSD`).
 - If `models/<BREAK_PREDICTION_MODEL>` does not exist, prediction endpoint returns 404 with a clear message.
 - Default testing path uses SQLite; production should use Postgres.
