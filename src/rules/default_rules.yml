@@ -1,0 +1,24 @@
+matching_rules:
+  - rule_name: equities_strict_match
+    asset_class: equity
+    trade_type: cash
+    priority: 1
+    match_fields:
+      - symbol
+      - trade_date
+      - side
+      - quantity
+      - price
+    tolerance_rules:
+      price:
+        type: percentage
+        value: 0.01
+      quantity:
+        type: absolute
+        value: 0
+
+routing_rules:
+  critical: senior_ops_manager
+  high: ops_manager
+  medium: ops_analyst
+  low: ops_team
