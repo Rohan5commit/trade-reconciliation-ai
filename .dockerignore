@@ -1,0 +1,16 @@
+.git
+.github
+__pycache__
+*.py[cod]
+.pytest_cache
+.coverage
+htmlcov
+.venv
+venv
+.env
+.mypy_cache
+ruff_cache
+.DS_Store
+tests/
+data/
+models/*.pkl

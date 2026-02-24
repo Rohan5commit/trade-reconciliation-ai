@@ -84,6 +84,13 @@ python3 scripts/seed_demo_data.py
 docker compose up --build
 ```
 
+For a standalone API container (without Postgres) you can run:
+
+```bash
+docker build -t trade-reconciliation-ai:local .
+docker run --rm -p 8000:8000 -e DATABASE_URL=sqlite+pysqlite:///./app.db trade-reconciliation-ai:local
+```
+
 ## API Endpoints (Phase 7)
 
 - `GET /api/v1/health`
@@ -125,6 +132,14 @@ Additional tasks in `src/tasks/jobs.py`:
 pytest -q
 python3 -m compileall -q src tests
 ```
+
+## GitHub CI
+
+GitHub Actions workflow: `.github/workflows/ci-docker.yml`
+
+- Runs unit tests on Python 3.11
+- Builds Docker image
+- Starts container and verifies `GET /api/v1/health`
 
 ## Notes
 
