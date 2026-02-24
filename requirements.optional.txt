@@ -1,0 +1,35 @@
+# Optional/extended dependencies (not required for base API container build)
+# Install with: pip install -r requirements.optional.txt
+
+# Additional fuzzy/NLP tooling
+thefuzz==0.22.1
+python-Levenshtein==0.26.0
+usaddress==0.5.11
+nameparser==1.1.3
+spacy==3.8.2
+transformers==4.46.2
+
+# Additional ML tooling
+xgboost==2.1.2
+lightgbm==4.5.0
+optuna==4.1.0
+shap==0.46.0
+
+# Additional market connectors
+alpaca-py==0.36.0
+ccxt==4.4.30
+pyodbc==5.2.0
+
+# Workflow alternatives
+prefect==3.1.7
+dramatiq[redis]==1.17.0
+
+# Monitoring/analytics/reporting
+prometheus-client==0.21.0
+sentry-sdk==2.18.0
+plotly==5.24.1
+ydata-profiling==4.10.0
+openpyxl==3.1.5
+
+# Legacy/experimental
+# NOTE: ibapi 10.19.1 is not available on PyPI; use a validated source/version before enabling.

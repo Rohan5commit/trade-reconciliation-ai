@@ -61,6 +61,12 @@ Default `.env.example` is configured for Kraken public API mode (no credentials 
 python3 -m pip install -r requirements.txt
 ```
 
+Optional extended packages (NLP, extra connectors, advanced ML):
+
+```bash
+python3 -m pip install -r requirements.optional.txt
+```
+
 3. Run API:
 
 ```bash
