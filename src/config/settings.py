@@ -24,6 +24,8 @@ class Settings(BaseSettings):
 
     oms_api_url: str = Field(default='', alias='OMS_API_URL')
     oms_api_key: str = Field(default='', alias='OMS_API_KEY')
+    alpaca_api_key_id: str = Field(default='', alias='ALPACA_API_KEY_ID')
+    alpaca_api_secret_key: str = Field(default='', alias='ALPACA_API_SECRET_KEY')
     custodian_sftp_host: str = Field(default='', alias='CUSTODIAN_SFTP_HOST')
     custodian_sftp_user: str = Field(default='', alias='CUSTODIAN_SFTP_USER')
     custodian_sftp_key: str = Field(default='', alias='CUSTODIAN_SFTP_KEY')
